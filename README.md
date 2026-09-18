@@ -35,3 +35,17 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # ParcialWeb
+
+
+
+
+## Decisiones de Arquitectura y Cambios del Parcial
+
+
+Punto 1 (Evolución del Contexto): Explique cómo cambió el modelo de datos dentro de CartContext respecto al preparcial y cómo aseguró la inmutabilidad de la información al manipular las cantidades y productos en memoria.
+
+Punto 1 (Evolución del Contexto): Con respecto al preparcial, ahora dentro del estado cart se guardan objetos que contienen la informacion de cada producto y ademas la cantidad de veces que se agrego al carrito. Para asegurar la inmutabilidad de la informacion, se utilizo el operador spread para crear un nuevo objeto con la informacion actualizada y no modificar el objeto original.
+
+Punto 2 (Cálculo de Totales): Se utilizo un useEffect y un nuevo estado, entonces lo que hace el useEffect es ejecutar una funcion cada vez que el estado Cart es modificado. Esta funcion recorre el array de cart (Actualizado) y calcula el total de productos y el total de precio, luego actualiza los estados correspondientes.
+
+Punto 3 (Arquitectura del Formulario): Se creo un estado por cada varible del formulario, y se creo un onchange para cada input que actualiza el estado correspondiente. Luego se creo un onsubmit que evita el comportamiento por defecto del formulario y vacia todo. Ademas se uso un useEffect para validar que todos los campos esten completos y habilitar el boton de submit solo cuando todos los campos esten completos.

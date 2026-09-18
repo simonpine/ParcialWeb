@@ -7,6 +7,7 @@ export interface Product {
   category: string;
   thumbnail: string;
   stock: number;
+  cantidad: number
 }
 
 export interface ProductDetail extends Product {

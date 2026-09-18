@@ -11,7 +11,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<ProductDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const { addItem } = useCart();
+  const { addItem, removeItem, superRemoveItem } = useCart();
 
   useEffect(() => {
 
@@ -32,6 +32,13 @@ export default function ProductDetail() {
 
   const handleAddToCart = (product: ProductDetailType) => {
     addItem(product);
+  };
+  const handleRemoveFromCart = (product: ProductDetailType) => {
+    removeItem(product);
+  };
+
+  const handleSuperRemoveFromCart = (product: ProductDetailType) => {
+    superRemoveItem(product);
   };
 
   if (loading) {
@@ -88,6 +95,20 @@ export default function ProductDetail() {
             className="addItem"
           >
             {product.stock > 0 ? "Agregar al carrito" : "Agotado"}
+          </button>
+
+          <button
+            onClick={() => handleRemoveFromCart(product)}
+            className="addItem"
+          >
+            - 1
+          </button>
+
+          <button
+            onClick={() => handleSuperRemoveFromCart(product)}
+            className="addItem"
+          >
+            Eliminar por completo este item
           </button>
         </div>
       </div>

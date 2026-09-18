@@ -140,3 +140,16 @@ main {
 .imgCont{
   max-width: 600px;
 }
+
+
+.itemCarro{
+  background-color: wheat;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.listaItemCarro{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

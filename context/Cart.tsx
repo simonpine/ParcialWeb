@@ -1,25 +1,138 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, use } from 'react';
 import { Product } from '@/api/api';
 
 interface CartContextValue {
     cart: Product[];
     addItem: (product: Product) => void;
+    cantidadItem: number;
+    removeItem: (product: Product) => void
+    superRemoveItem: (product: Product) => void
+    vaciar: any
+    valorApagar: any
 }
 
 export const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
 
-    const [cart, setCart] = useState<Product[]>([])
+    const [cart, setCart] = useState<any[]>([])
+    const [cantidadItem, setCantidadItems] = useState(0)
+    const [valorApagar, setValorAPagar] = useState(0)
 
     const addItem = (product: Product) => {
-        setCart((prev) => [...prev, product]);
+
+        setCart((prev) => {
+            let encontrado = false
+            const newList = []
+            for (let item of prev) {
+
+                if (item.id === product.id) {
+                    encontrado = true
+                    let newItem = { ...item }
+                    newItem["cantidad"] += 1
+                    newList.push(newItem)
+                }
+                else {
+                    newList.push(item)
+                }
+
+            }
+            if (encontrado) {
+                return newList
+            }
+            else {
+                return [...prev, {
+                    ...product,
+                    cantidad: 1
+                }]
+            }
+
+        }
+        )
+
+
+
+
     };
 
+    const removeItem = (product: Product) => {
+
+        setCart((prev) => {
+            let encontrado = false
+            const newList = []
+            for (let item of prev) {
+
+                if (item.id === product.id) {
+                    encontrado = true
+                    let newItem = { ...item }
+                    newItem["cantidad"] -= 1
+                    if (newItem["cantidad"] > 0) {
+                        newList.push(newItem)
+                    }
+                }
+                else {
+                    newList.push(item)
+                }
+
+            }
+            if (encontrado) {
+                return newList
+            }
+            else {
+                return prev
+            }
+
+        }
+        )
+    }
+
+    const vaciar = () => {
+        setCart([])
+    }
+
+    const superRemoveItem = (product: Product) => {
+
+        setCart((prev) => {
+            let encontrado = false
+            const newList = []
+            for (let item of prev) {
+
+                if (item.id !== product.id) {
+                    newList.push(item)
+                }
+                if (item.id == product.id) {
+                    encontrado = true
+                }
+
+            }
+            if (encontrado) {
+
+                return newList
+            }
+            else {
+                return prev
+            }
+
+        }
+        )
+    }
+    useEffect(() => {
+        let res = 0
+        let val = 0
+        for (let item of cart) {
+            res += item.cantidad
+            val += item.price * item.cantidad
+        }
+        setCantidadItems(res)
+        setValorAPagar(val)
+
+        console.log(cart)
+    }, [cart])
+
     return (
-        <CartContext.Provider value={{ cart, addItem }}>
+        <CartContext.Provider value={{ cart, addItem, cantidadItem, removeItem, superRemoveItem, vaciar, valorApagar }}>
             {children}
         </CartContext.Provider>
     );
