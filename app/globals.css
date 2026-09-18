@@ -1,26 +1,142 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  padding: 0;
+  margin: 0;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.navBar {
+  background-color: black;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: white;
+  padding: 30px;
+
+
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.nameShop {
+  color: white;
+  text-decoration: none;
+
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.nameShop:hover {
+  color: wheat;
+}
+
+.cartChimba {
+  position: relative;
+  width: 30px;
+  height: 30px;
+
+}
+
+.cartChimbaImg {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+}
+
+.infoCart {
+  right: -15px;
+  top: -15px;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  background-color: wheat;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  color: black;
+}
+
+.ListaProductos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  width: fit-content;
+}
+
+main {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.iteam {
+  background-color: rgba(245, 222, 179, 0.249);
+  padding: 20px;
+  border-radius: 20px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+}
+
+.addItem {
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: none;
+  background-color: black;
+  color: wheat;
+  width: fit-content;
+}
+
+.addItem:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.831);
+}
+
+.titleItem{
+  color: black;
+  text-decoration: none;
+  
+}
+
+.textos{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.detalleProducto{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+.imagenDetalle{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  
+}
+
+.textos2{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 30px;
+  max-width: 400px;
+}
+
+.imgCont{
+  max-width: 600px;
 }
