@@ -1,42 +1,59 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { getProducts, Product } from "@/api/api";
+import { useState } from "react";
 import { useCart } from "@/context/Cart";
 
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export default function Checkout() {
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
-    const [pago, setPago] = useState("")
-    const [teminos, setTerminos] = useState(false)
-
-
-
-    const [listo, setListo] = useState(false)
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        pago: "",
+        terminos: false,
+    })
+    const [touched, setTouched] = useState({
+        name: false,
+        email: false,
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [orderConfirmed, setOrderConfirmed] = useState(false)
 
     const { cart, valorApagar, vaciar, cantidadItem } = useCart();
 
-    useEffect(()=>{
-        console.log(teminos)
+    const handleChange = (e: any) => {
+        const { name, value, type } = e.target
+        const newValue = type === "checkbox" ? (e.target as HTMLInputElement).checked : value
+        setForm((prev) => ({ ...prev, [name]: newValue }))
+    }
 
-        if (cantidadItem > 0){
-            if(name !== ""){
-                if(email !== ""){
-                    if(teminos){
-                        if (pago !== ""){
-                            setListo(true)
-                        }
-                    }
-                }
-            }
+    const handleBlur = (e: any) => {
+        const { name } = e.target
+        setTouched((prev) => ({ ...prev, [name]: true }))
+    }
+
+    const nameError = form.name.trim().length < 5 ? "El nombre debe tener al menos 5 caracteres" : ""
+    const emailError = !EMAIL_REGEX.test(form.email) ? "El correo no tiene un formato válido" : ""
+
+    const listo = cantidadItem > 0 && !nameError && !emailError && form.pago !== "" && form.terminos
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (isSubmitting) return
+
+        setOrderConfirmed(false)
+        setIsSubmitting(true)
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1500))
+            vaciar()
+            setForm({ name: "", email: "", pago: "", terminos: false })
+            setTouched({ name: false, email: false })
+            setOrderConfirmed(true)
+        } finally {
+            setIsSubmitting(false)
         }
-        else{        setListo(false)
-
-
-        }
-    },[name, email, pago,teminos, cantidadItem])
+    }
 
     return (
         <main>
@@ -47,7 +64,7 @@ export default function Checkout() {
                 {cart.map(item => {
 
                     return (
-                        <div className="itemCarro">
+                        <div key={item.id} className="itemCarro">
                             <h4>{item.id} - {item.title}</h4>
                             <h4>Cantidad: {item.cantidad}</h4>
                             <h4>Subtotal: {item.cantidad * item.price}</h4>
@@ -60,38 +77,29 @@ export default function Checkout() {
             <h1>
                 Formulario Compra
             </h1>
-            <form onSubmit={(e)=> {
-                e.preventDefault()
-                setName("")
-                setEmail("")
-                setListo(false)
-                setPago("")
-                vaciar()
-                alert("Listoooo")
-            }}>
-                <input type="text" placeholder="Nombre" value={name} onChange={(e) => {
-                    setName(e.target.value)
-                }} />
-                <input type="text" value={email} placeholder="Email" onChange={(e) => {
-                    setEmail(e.target.value)
-                }} />
-                <select value={pago} onChange={(e) => {
-                    setPago(e.target.value)
-                }}>
-                    <option>Visa</option>
-                    <option>Mastercard</option>
+            {orderConfirmed && (
+                <p className="confirmacionPedido">Pedido confirmado con éxito!</p>
+            )}
+            <form onSubmit={handleSubmit}>
+                <input type="text" name="name" placeholder="Nombre" value={form.name} onChange={handleChange} onBlur={handleBlur} />
+                {touched.name && nameError && <p className="errorCampo">{nameError}</p>}
+
+                <input type="text" name="email" value={form.email} placeholder="Email" onChange={handleChange} onBlur={handleBlur} />
+                {touched.email && emailError && <p className="errorCampo">{emailError}</p>}
+
+                <select name="pago" value={form.pago} onChange={handleChange}>
+                    <option value="">Seleccione</option>
+                    <option value="Visa">Visa</option>
+                    <option value="Mastercard">Mastercard</option>
                 </select>
                 <div>
                     Accepto terminos y condiciones
-                    <input checked={teminos} onChange={()=> {
-                        setTerminos(!teminos)
-                    }} type="checkbox" />
+                    <input checked={form.terminos} name="terminos" onChange={handleChange} type="checkbox" />
                 </div>
 
-                <button type="submit"  disabled={!listo} onClick={() => {
-
-
-                }}>Confirmar</button>
+                <button type="submit" disabled={!listo || isSubmitting}>
+                    {isSubmitting ? "Enviando..." : "Confirmar"}
+                </button>
             </form>
 
         </main>

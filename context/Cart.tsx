@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect, use } from 'react';
+import { createContext, useContext, useState, ReactNode, use } from 'react';
 import { Product } from '@/api/api';
 
 interface CartContextValue {
@@ -18,8 +18,13 @@ export const CartContext = createContext<CartContextValue | undefined>(undefined
 export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const [cart, setCart] = useState<any[]>([])
-    const [cantidadItem, setCantidadItems] = useState(0)
-    const [valorApagar, setValorAPagar] = useState(0)
+
+    let cantidadItem = 0
+    let valorApagar = 0
+    for (let item of cart) {
+        cantidadItem += item.cantidad
+        valorApagar += item.price * item.cantidad
+    }
 
     const addItem = (product: Product) => {
 
@@ -118,19 +123,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         }
         )
     }
-    useEffect(() => {
-        let res = 0
-        let val = 0
-        for (let item of cart) {
-            res += item.cantidad
-            val += item.price * item.cantidad
-        }
-        setCantidadItems(res)
-        setValorAPagar(val)
-
-        console.log(cart)
-    }, [cart])
-
     return (
         <CartContext.Provider value={{ cart, addItem, cantidadItem, removeItem, superRemoveItem, vaciar, valorApagar }}>
             {children}
